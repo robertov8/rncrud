@@ -1,8 +1,9 @@
 import faker from 'faker/locale/pt_BR';
 
+const SEED_MAX = 35;
 const seeds = [];
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < SEED_MAX; i++) {
   const id = faker.random.number();
   const name = `${faker.name.lastName()} ${faker.name.lastName()}`;
   const email = faker.internet.email();
