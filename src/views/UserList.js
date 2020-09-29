@@ -1,11 +1,34 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {Alert, FlatList, View} from 'react-native';
+import {Button, Icon, ListItem} from 'react-native-elements';
 
 import users from '../data/users';
-import {ListItem} from 'react-native-elements';
 
 export default ({navigation}) => {
-  const navigationToForm = () => navigation.navigate('UserForm');
+  const navigationToForm = (user = null) => () =>
+    navigation.navigate('UserForm', user);
+
+  const confirmUserDelete = (user) => () => {
+    Alert.alert('Excluir Usuário', 'Deseja excluir o usuário?', [
+      {text: 'Sim', onPress: () => console.warn('delete', user)},
+      {text: 'Não'},
+    ]);
+  };
+
+  const getActions = (user) => (
+    <>
+      <Button
+        type="clear"
+        icon={<Icon name="edit" color="orange" />}
+        onPress={navigationToForm(user)}
+      />
+      <Button
+        type="clear"
+        icon={<Icon name="delete" color="red" />}
+        onPress={confirmUserDelete(user)}
+      />
+    </>
+  );
 
   const getUserItem = ({item: user}) => (
     <ListItem
@@ -14,6 +37,7 @@ export default ({navigation}) => {
       leftAvatar={{source: {uri: user.avatarUrl}}}
       title={user.name}
       subtitle={user.email}
+      rightElement={getActions(user)}
       onPress={navigationToForm}
     />
   );
