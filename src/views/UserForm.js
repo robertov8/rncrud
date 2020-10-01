@@ -1,12 +1,21 @@
-import React, {useState} from 'react';
-import {Text, TextInput, View, StyleSheet, Button} from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Text, TextInput, View, StyleSheet, Button } from 'react-native';
+import UsersContext, { TYPES } from '../context/UsersContext';
 
-export default ({route, navigation}) => {
+export default ({ route, navigation }) => {
+  const { dispatch } = useContext(UsersContext);
+
   const [user, setUser] = useState(route.params ? route.params : {});
 
-  const onSubmitForm = () => navigation.goBack();
+  const onSubmitForm = () => {
+    dispatch({
+      type: user.id ? TYPES.UPDATE_USER : TYPES.CREATE_USER,
+      payload: user,
+    });
+    navigation.goBack();
+  };
 
-  const onChangeText = (key) => (value) => setUser({...user, [key]: value});
+  const onChangeText = key => value => setUser({ ...user, [key]: value });
 
   return (
     <View style={style.form}>
