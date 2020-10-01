@@ -1,10 +1,13 @@
-import React from 'react';
-import {Alert, FlatList, View} from 'react-native';
-import {Button, Icon, ListItem} from 'react-native-elements';
-
-import users from '../data/users';
+import React, {useContext} from 'react';
+import {Alert, FlatList, View, StyleSheet} from 'react-native';
+import {Avatar, Button, Icon, ListItem} from 'react-native-elements';
+import UsersContext from '../context/UsersContext';
 
 export default ({navigation}) => {
+  const {
+    state: {users},
+  } = useContext(UsersContext);
+
   const navigationToForm = (user = null) => () =>
     navigation.navigate('UserForm', user);
 
@@ -15,31 +18,29 @@ export default ({navigation}) => {
     ]);
   };
 
-  const getActions = (user) => (
-    <>
-      <Button
-        type="clear"
-        icon={<Icon name="edit" color="orange" />}
-        onPress={navigationToForm(user)}
-      />
-      <Button
-        type="clear"
-        icon={<Icon name="delete" color="red" />}
-        onPress={confirmUserDelete(user)}
-      />
-    </>
-  );
-
   const getUserItem = ({item: user}) => (
-    <ListItem
-      bottomDivider
-      key={user.id}
-      leftAvatar={{source: {uri: user.avatarUrl}}}
-      title={user.name}
-      subtitle={user.email}
-      rightElement={getActions(user)}
-      onPress={navigationToForm}
-    />
+    <ListItem bottomDivider key={user.id} onPress={navigationToForm}>
+      <Avatar source={{uri: user.avatarUrl}} />
+      <ListItem.Content style={style.listItemContent}>
+        <View>
+          <ListItem.Title>{user.name}</ListItem.Title>
+          <ListItem.Subtitle>{user.email}</ListItem.Subtitle>
+        </View>
+
+        <View style={style.listItemButtons}>
+          <Button
+            type="clear"
+            icon={<Icon name="edit" color="orange" />}
+            onPress={navigationToForm(user)}
+          />
+          <Button
+            type="clear"
+            icon={<Icon name="delete" color="red" />}
+            onPress={confirmUserDelete(user)}
+          />
+        </View>
+      </ListItem.Content>
+    </ListItem>
   );
 
   return (
@@ -52,3 +53,13 @@ export default ({navigation}) => {
     </View>
   );
 };
+
+const style = StyleSheet.create({
+  listItemContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  listItemButtons: {
+    flexDirection: 'row',
+  },
+});
